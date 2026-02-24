@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Práctica Completa de Verbos</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #4e73df, #1cc88a);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+}
+
+.contenedor{
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    width:420px;
+    text-align:center;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+
+input{
+    padding:8px;
+    margin:5px;
+    width:150px;
+    border-radius:5px;
+    border:1px solid #ccc;
+}
+
+button{
+    padding:8px 15px;
+    margin-top:10px;
+    border:none;
+    border-radius:5px;
+    background:#36b9cc;
+    color:white;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#2c9faf;
+}
+
+.resultado{
+    margin-top:15px;
+    font-weight:bold;
+}
+
+.info{
+    margin-top:10px;
+    font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="contenedor">
+    <h2>Práctica Completa</h2>
+    <p id="verbo"></p>
+
+    <input type="text" id="pasado" placeholder="Pasado">
+    <input type="text" id="participio" placeholder="Participio">
+    <br>
+    <input type="text" id="espanol" placeholder="Significado en español">
+    <br>
+    <button onclick="verificar()">Verificar</button>
+
+    <div class="resultado" id="resultado"></div>
+    <div class="info" id="info"></div>
+</div>
+
+<script>
+
+let verbos = [
+    {base:"be", esp:["ser","estar"], past:["was","were"], participle:"been"},
+    {base:"have", esp:["tener"], past:["had"], participle:"had"},
+    {base:"do", esp:["hacer"], past:["did"], participle:"done"},
+    {base:"say", esp:["decir"], past:["said"], participle:"said"},
+    {base:"go", esp:["ir"], past:["went"], participle:"gone"},
+    {base:"get", esp:["obtener","conseguir"], past:["got"], participle:"got"},
+    {base:"make", esp:["hacer"], past:["made"], participle:"made"},
+    {base:"know", esp:["saber","conocer"], past:["knew"], participle:"known"}
+];
+
+let pendientes = [...verbos];
+let actual;
+let intentos = 0;
+
+function nuevoVerbo(){
+    if(pendientes.length === 0){
+        document.getElementById("verbo").textContent = "🎉 ¡Dominaste todos los verbos!";
+        document.getElementById("resultado").textContent = "";
+        document.getElementById("info").textContent = "Intentos totales: " + intentos;
+        return;
+    }
+
+    let indice = Math.floor(Math.random() * pendientes.length);
+    actual = pendientes[indice];
+
+    document.getElementById("verbo").textContent =
+        "Verbo: " + actual.base;
+
+    document.getElementById("pasado").value = "";
+    document.getElementById("participio").value = "";
+    document.getElementById("espanol").value = "";
+    document.getElementById("resultado").textContent = "";
+    document.getElementById("info").textContent =
+        "Te faltan " + pendientes.length + " verbos";
+}
+
+function verificar(){
+    intentos++;
+
+    let pasadoUsuario = document.getElementById("pasado").value.toLowerCase().trim();
+    let participioUsuario = document.getElementById("participio").value.toLowerCase().trim();
+    let espUsuario = document.getElementById("espanol").value.toLowerCase().trim();
+
+    let pasadoCorrecto = actual.past.includes(pasadoUsuario);
+    let participioCorrecto = participioUsuario === actual.participle;
+    let espCorrecto = actual.esp.includes(espUsuario);
+
+    if(pasadoCorrecto && participioCorrecto && espCorrecto){
+        document.getElementById("resultado").textContent = "✅ ¡Correcto!";
+        pendientes = pendientes.filter(v => v.base !== actual.base);
+        setTimeout(nuevoVerbo, 1000);
+    } else {
+        document.getElementById("resultado").textContent =
+            "❌ Incorrecto.\nPasado: " + actual.past.join("/") +
+            " | Participio: " + actual.participle +
+            " | Español: " + actual.esp.join("/") +
+            "\nVolverá a salir.";
+        setTimeout(nuevoVerbo, 2500);
+    }
+}
+
+nuevoVerbo();
+
+</script>
+
+</body>
+</html>
