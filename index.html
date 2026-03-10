@@ -7,8 +7,8 @@
 
 <style>
 body{
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #4e73df, #1cc88a);
+    font-family: Arial;
+    background: linear-gradient(135deg,#4e73df,#1cc88a);
     display:flex;
     justify-content:center;
     align-items:center;
@@ -22,20 +22,17 @@ body{
     border-radius:15px;
     width:420px;
     text-align:center;
-    box-shadow:0 10px 25px rgba(0,0,0,0.2);
 }
 
 input{
     padding:8px;
     margin:5px;
     width:150px;
-    border-radius:5px;
-    border:1px solid #ccc;
 }
 
 button{
     padding:8px 15px;
-    margin-top:10px;
+    margin:5px;
     border:none;
     border-radius:5px;
     background:#36b9cc;
@@ -51,96 +48,138 @@ button:hover{
     margin-top:15px;
     font-weight:bold;
 }
-
-.info{
-    margin-top:10px;
-    font-size:14px;
-}
 </style>
 </head>
 
 <body>
 
 <div class="contenedor">
-    <h2>Práctica Completa</h2>
-    <p id="verbo"></p>
 
-    <input type="text" id="pasado" placeholder="Pasado">
-    <input type="text" id="participio" placeholder="Participio">
-    <br>
-    <input type="text" id="espanol" placeholder="Significado en español">
-    <br>
-    <button onclick="verificar()">Verificar</button>
+<div id="menu">
+<h2>Práctica de Verbos</h2>
 
-    <div class="resultado" id="resultado"></div>
-    <div class="info" id="info"></div>
+<button onclick="modoNuevo()">Repasar verbos nuevos</button>
+<button onclick="modoTodos()">Repasar todos</button>
+</div>
+
+<div id="juego" style="display:none">
+
+<h2>Práctica</h2>
+
+<p id="verbo"></p>
+
+<input type="text" id="pasado" placeholder="Pasado">
+<input type="text" id="participio" placeholder="Participio">
+<br>
+<input type="text" id="espanol" placeholder="Significado en español">
+<br>
+
+<button onclick="verificar()">Verificar</button>
+
+<div class="resultado" id="resultado"></div>
+<div id="info"></div>
+
+</div>
+
 </div>
 
 <script>
 
-let verbos = [
-    {base:"be", esp:["ser","estar"], past:["was","were"], participle:"been"},
-    {base:"have", esp:["tener"], past:["had"], participle:"had"},
-    {base:"do", esp:["hacer"], past:["did"], participle:"done"},
-    {base:"say", esp:["decir"], past:["said"], participle:"said"},
-    {base:"go", esp:["ir"], past:["went"], participle:"gone"},
-    {base:"get", esp:["obtener","conseguir"], past:["got"], participle:"got"},
-    {base:"make", esp:["hacer"], past:["made"], participle:"made"},
-    {base:"know", esp:["saber","conocer"], past:["knew"], participle:"known"}
+let antiguos = [
+{base:"be",esp:["ser","estar"],past:["was","were"],participle:"been"},
+{base:"have",esp:["tener"],past:["had"],participle:"had"},
+{base:"do",esp:["hacer"],past:["did"],participle:"done"},
+{base:"say",esp:["decir"],past:["said"],participle:"said"},
+{base:"go",esp:["ir"],past:["went"],participle:"gone"},
+{base:"get",esp:["obtener","conseguir"],past:["got"],participle:"got"},
+{base:"make",esp:["hacer"],past:["made"],participle:"made"},
+{base:"know",esp:["saber","conocer"],past:["knew"],participle:"known"}
 ];
 
-let pendientes = [...verbos];
+let nuevos = [
+{base:"think",esp:["pensar"],past:["thought"],participle:"thought"},
+{base:"take",esp:["tomar","llevar"],past:["took"],participle:"taken"},
+{base:"see",esp:["ver"],past:["saw"],participle:"seen"},
+{base:"come",esp:["venir"],past:["came"],participle:"come"},
+{base:"want",esp:["querer"],past:["wanted"],participle:"wanted"},
+{base:"give",esp:["dar"],past:["gave"],participle:"given"},
+{base:"find",esp:["encontrar"],past:["found"],participle:"found"},
+{base:"tell",esp:["decir","contar"],past:["told"],participle:"told"}
+];
+
+let verbos = [];
+let pendientes = [];
 let actual;
 let intentos = 0;
 
+function modoNuevo(){
+    verbos = nuevos;
+    iniciar();
+}
+
+function modoTodos(){
+    verbos = antiguos.concat(nuevos);
+    iniciar();
+}
+
+function iniciar(){
+    document.getElementById("menu").style.display="none";
+    document.getElementById("juego").style.display="block";
+
+    pendientes = [...verbos];
+    nuevoVerbo();
+}
+
 function nuevoVerbo(){
-    if(pendientes.length === 0){
-        document.getElementById("verbo").textContent = "🎉 ¡Dominaste todos los verbos!";
-        document.getElementById("resultado").textContent = "";
-        document.getElementById("info").textContent = "Intentos totales: " + intentos;
+
+    if(pendientes.length===0){
+        document.getElementById("verbo").textContent="🎉 Terminaste todos";
+        document.getElementById("resultado").textContent="";
+        document.getElementById("info").textContent="Intentos: "+intentos;
         return;
     }
 
-    let indice = Math.floor(Math.random() * pendientes.length);
-    actual = pendientes[indice];
+    let indice=Math.floor(Math.random()*pendientes.length);
+    actual=pendientes[indice];
 
-    document.getElementById("verbo").textContent =
-        "Verbo: " + actual.base;
+    document.getElementById("verbo").textContent="Verbo: "+actual.base;
 
-    document.getElementById("pasado").value = "";
-    document.getElementById("participio").value = "";
-    document.getElementById("espanol").value = "";
-    document.getElementById("resultado").textContent = "";
-    document.getElementById("info").textContent =
-        "Te faltan " + pendientes.length + " verbos";
+    pasado.value="";
+    participio.value="";
+    espanol.value="";
+    resultado.textContent="";
 }
 
 function verificar(){
+
     intentos++;
 
-    let pasadoUsuario = document.getElementById("pasado").value.toLowerCase().trim();
-    let participioUsuario = document.getElementById("participio").value.toLowerCase().trim();
-    let espUsuario = document.getElementById("espanol").value.toLowerCase().trim();
+    let pasadoUsuario=pasado.value.toLowerCase().trim();
+    let participioUsuario=participio.value.toLowerCase().trim();
+    let espUsuario=espanol.value.toLowerCase().trim();
 
-    let pasadoCorrecto = actual.past.includes(pasadoUsuario);
-    let participioCorrecto = participioUsuario === actual.participle;
-    let espCorrecto = actual.esp.includes(espUsuario);
+    let pasadoCorrecto=actual.past.includes(pasadoUsuario);
+    let participioCorrecto=participioUsuario===actual.participle;
+    let espCorrecto=actual.esp.includes(espUsuario);
 
     if(pasadoCorrecto && participioCorrecto && espCorrecto){
-        document.getElementById("resultado").textContent = "✅ ¡Correcto!";
-        pendientes = pendientes.filter(v => v.base !== actual.base);
-        setTimeout(nuevoVerbo, 1000);
-    } else {
-        document.getElementById("resultado").textContent =
-            "❌ Incorrecto.\nPasado: " + actual.past.join("/") +
-            " | Participio: " + actual.participle +
-            " | Español: " + actual.esp.join("/") +
-            "\nVolverá a salir.";
-        setTimeout(nuevoVerbo, 2500);
+
+        resultado.textContent="✅ Correcto";
+
+        pendientes=pendientes.filter(v=>v.base!==actual.base);
+
+        setTimeout(nuevoVerbo,1000);
+
+    }else{
+
+        resultado.textContent=
+        "❌ Incorrecto | Pasado: "+actual.past.join("/")+
+        " | Participio: "+actual.participle+
+        " | Español: "+actual.esp.join("/");
+
+        setTimeout(nuevoVerbo,2500);
     }
 }
-
-nuevoVerbo();
 
 </script>
 
