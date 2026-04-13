@@ -1,187 +1,256 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Práctica Completa de Verbos</title>
 
 <style>
-body{
-    font-family: Arial;
-    background: linear-gradient(135deg,#4e73df,#1cc88a);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-    margin:0;
-}
-
-.contenedor{
-    background:white;
-    padding:30px;
-    border-radius:15px;
-    width:420px;
-    text-align:center;
-}
-
-input{
-    padding:8px;
-    margin:5px;
-    width:150px;
-}
-
-button{
-    padding:8px 15px;
-    margin:5px;
-    border:none;
-    border-radius:5px;
-    background:#36b9cc;
-    color:white;
-    cursor:pointer;
-}
-
-button:hover{
-    background:#2c9faf;
-}
-
-.resultado{
-    margin-top:15px;
-    font-weight:bold;
-}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body-wrap { font-family: Arial, sans-serif; }
+  .bg { background: linear-gradient(135deg, #4e73df, #1cc88a); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+  .contenedor { background: white; padding: 30px; border-radius: 15px; width: 100%; max-width: 420px; text-align: center; }
+  h2 { margin-bottom: 18px; color: #333; font-size: 20px; }
+  .verbo-display { font-size: 26px; font-weight: bold; color: #4e73df; margin: 12px 0 18px; }
+  .input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; align-items: center; }
+  .input-group input { padding: 9px 12px; width: 220px; border: 1.5px solid #ccc; border-radius: 7px; font-size: 15px; text-align: center; }
+  .input-group input:focus { outline: none; border-color: #4e73df; }
+  .btn { padding: 9px 22px; border: none; border-radius: 7px; background: #36b9cc; color: white; cursor: pointer; font-size: 15px; font-weight: 500; }
+  .btn:hover { background: #2c9faf; }
+  .btn-menu { display: block; width: 220px; margin: 8px auto; padding: 10px; border: none; border-radius: 8px; background: #4e73df; color: white; cursor: pointer; font-size: 15px; font-weight: 500; }
+  .btn-menu:hover { background: #3a5fc0; }
+  .btn-menu.verde { background: #1cc88a; }
+  .btn-menu.verde:hover { background: #17a673; }
+  .resultado { margin-top: 14px; font-weight: bold; font-size: 15px; min-height: 22px; }
+  .resultado.ok { color: #1cc88a; }
+  .resultado.fail { color: #e74a3b; }
+  .info-card { margin-top: 10px; background: #f8f9fc; border-radius: 8px; padding: 10px 14px; text-align: left; font-size: 13px; color: #444; display: none; }
+  .info-card table { width: 100%; border-collapse: collapse; }
+  .info-card td { padding: 3px 6px; }
+  .info-card td:first-child { color: #888; width: 110px; }
+  .info-card td:last-child { font-weight: 600; color: #333; }
+  .score-row { display: flex; gap: 10px; margin-bottom: 18px; justify-content: center; }
+  .score-box { background: #f0f4ff; border-radius: 8px; padding: 8px 14px; text-align: center; min-width: 80px; }
+  .score-box .s-label { font-size: 11px; color: #888; }
+  .score-box .s-val { font-size: 20px; font-weight: bold; color: #4e73df; }
+  .progress { height: 6px; background: #e0e0e0; border-radius: 3px; margin-bottom: 18px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #1cc88a; border-radius: 3px; transition: width 0.4s; }
+  .tag { display: inline-block; background: #e8f4fd; color: #4e73df; font-size: 11px; padding: 2px 10px; border-radius: 12px; margin-bottom: 10px; font-weight: 500; }
+  .final-emoji { font-size: 40px; margin-bottom: 10px; }
 </style>
-</head>
 
-<body>
+<div class="bg">
+  <div class="contenedor">
 
-<div class="contenedor">
+    <div id="menu">
+      <h2>🎯 Práctica de Verbos</h2>
+      <p style="color:#888;font-size:13px;margin-bottom:18px;">50 verbos irregulares · Past Simple + Español</p>
+      <button class="btn-menu verde" onclick="iniciar()">▶ Empezar práctica</button>
+    </div>
 
-<div id="menu">
-<h2>Práctica de Verbos</h2>
+    <div id="juego" style="display:none">
+      <div class="score-row">
+        <div class="score-box"><div class="s-label">Correctas</div><div class="s-val" id="sc-ok">0</div></div>
+        <div class="score-box"><div class="s-label">Incorrectas</div><div class="s-val" id="sc-fail" style="color:#e74a3b">0</div></div>
+        <div class="score-box"><div class="s-label">Faltan</div><div class="s-val" id="sc-left" style="color:#f6c23e">50</div></div>
+      </div>
+      <div class="progress"><div class="progress-fill" id="pbar" style="width:0%"></div></div>
+      <div class="tag" id="etapa-tag">Verbo en inglés</div>
+      <div class="verbo-display" id="verbo-display">—</div>
+      <div class="input-group">
+        <input type="text" id="inp-past" placeholder="Past simple..." autocomplete="off" autocorrect="off" spellcheck="false" />
+        <input type="text" id="inp-esp" placeholder="Significado en español..." autocomplete="off" autocorrect="off" spellcheck="false" />
+      </div>
+      <button class="btn" onclick="verificar()">Verificar ✓</button>
+      <div class="resultado" id="resultado"></div>
+      <div class="info-card" id="info-card">
+        <table id="info-table"></table>
+      </div>
+    </div>
 
-<button onclick="modoNuevo()">Repasar verbos nuevos</button>
-<button onclick="modoTodos()">Repasar todos</button>
-</div>
+    <div id="final" style="display:none">
+      <div class="final-emoji">🏆</div>
+      <h2 id="final-titulo"></h2>
+      <p style="color:#888;margin:10px 0 20px" id="final-msg"></p>
+      <button class="btn-menu verde" onclick="reiniciar()">Jugar de nuevo</button>
+    </div>
 
-<div id="juego" style="display:none">
-
-<h2>Práctica</h2>
-
-<p id="verbo"></p>
-
-<input type="text" id="pasado" placeholder="Pasado">
-<input type="text" id="participio" placeholder="Participio">
-<br>
-<input type="text" id="espanol" placeholder="Significado en español">
-<br>
-
-<button onclick="verificar()">Verificar</button>
-
-<div class="resultado" id="resultado"></div>
-<div id="info"></div>
-
-</div>
-
+  </div>
 </div>
 
 <script>
-
-let antiguos = [
-{base:"be",esp:["ser","estar"],past:["was","were"],participle:"been"},
-{base:"have",esp:["tener"],past:["had"],participle:"had"},
-{base:"do",esp:["hacer"],past:["did"],participle:"done"},
-{base:"say",esp:["decir"],past:["said"],participle:"said"},
-{base:"go",esp:["ir"],past:["went"],participle:"gone"},
-{base:"get",esp:["obtener","conseguir"],past:["got"],participle:"got"},
-{base:"make",esp:["hacer"],past:["made"],participle:"made"},
-{base:"know",esp:["saber","conocer"],past:["knew"],participle:"known"}
+const verbos = [
+  {inf:"be",        ps:"was / were", esp:["ser","estar","ser / estar"]},
+  {inf:"become",    ps:"became",     esp:["convertirse","volverse"]},
+  {inf:"begin",     ps:"began",      esp:["empezar","comenzar"]},
+  {inf:"bring",     ps:"brought",    esp:["traer"]},
+  {inf:"buy",       ps:"bought",     esp:["comprar"]},
+  {inf:"choose",    ps:"chose",      esp:["elegir","escoger"]},
+  {inf:"come",      ps:"came",       esp:["venir"]},
+  {inf:"do",        ps:"did",        esp:["hacer"]},
+  {inf:"drink",     ps:"drank",      esp:["beber","tomar"]},
+  {inf:"drive",     ps:"drove",      esp:["conducir","manejar","conducir / manejar"]},
+  {inf:"eat",       ps:"ate",        esp:["comer"]},
+  {inf:"fall",      ps:"fell",       esp:["caer","caerse"]},
+  {inf:"feel",      ps:"felt",       esp:["sentir","sentirse"]},
+  {inf:"find",      ps:"found",      esp:["encontrar","hallar"]},
+  {inf:"fly",       ps:"flew",       esp:["volar"]},
+  {inf:"forget",    ps:"forgot",     esp:["olvidar"]},
+  {inf:"get",       ps:"got",        esp:["obtener","conseguir","obtener / conseguir"]},
+  {inf:"give",      ps:"gave",       esp:["dar"]},
+  {inf:"go",        ps:"went",       esp:["ir"]},
+  {inf:"have",      ps:"had",        esp:["tener","haber"]},
+  {inf:"hear",      ps:"heard",      esp:["escuchar","oir","oír","escuchar / oír"]},
+  {inf:"keep",      ps:"kept",       esp:["mantener","guardar","mantener / guardar"]},
+  {inf:"know",      ps:"knew",       esp:["saber","conocer","saber / conocer"]},
+  {inf:"leave",     ps:"left",       esp:["salir","dejar","irse","salir / dejar"]},
+  {inf:"lend",      ps:"lent",       esp:["prestar"]},
+  {inf:"let",       ps:"let",        esp:["dejar","permitir","dejar / permitir"]},
+  {inf:"lose",      ps:"lost",       esp:["perder"]},
+  {inf:"make",      ps:"made",       esp:["hacer","fabricar","hacer / fabricar"]},
+  {inf:"meet",      ps:"met",        esp:["conocer","reunirse","conocer / reunirse"]},
+  {inf:"pay",       ps:"paid",       esp:["pagar"]},
+  {inf:"put",       ps:"put",        esp:["poner"]},
+  {inf:"read",      ps:"read",       esp:["leer"]},
+  {inf:"run",       ps:"ran",        esp:["correr"]},
+  {inf:"say",       ps:"said",       esp:["decir"]},
+  {inf:"see",       ps:"saw",        esp:["ver"]},
+  {inf:"sell",      ps:"sold",       esp:["vender"]},
+  {inf:"send",      ps:"sent",       esp:["enviar","mandar"]},
+  {inf:"sing",      ps:"sang",       esp:["cantar"]},
+  {inf:"sit",       ps:"sat",        esp:["sentarse","sentar"]},
+  {inf:"sleep",     ps:"slept",      esp:["dormir"]},
+  {inf:"speak",     ps:"spoke",      esp:["hablar"]},
+  {inf:"stand",     ps:"stood",      esp:["estar de pie","pararse"]},
+  {inf:"swim",      ps:"swam",       esp:["nadar"]},
+  {inf:"take",      ps:"took",       esp:["tomar","llevar","tomar / llevar"]},
+  {inf:"teach",     ps:"taught",     esp:["enseñar"]},
+  {inf:"tell",      ps:"told",       esp:["decir","contar","decir / contar"]},
+  {inf:"think",     ps:"thought",    esp:["pensar"]},
+  {inf:"understand",ps:"understood", esp:["entender","comprender"]},
+  {inf:"wear",      ps:"wore",       esp:["llevar","usar","vestir","llevar / usar ropa"]},
+  {inf:"write",     ps:"wrote",      esp:["escribir"]},
 ];
 
-let nuevos = [
-{base:"think",esp:["pensar"],past:["thought"],participle:"thought"},
-{base:"take",esp:["tomar","llevar"],past:["took"],participle:"taken"},
-{base:"see",esp:["ver"],past:["saw"],participle:"seen"},
-{base:"come",esp:["venir"],past:["came"],participle:"come"},
-{base:"want",esp:["querer"],past:["wanted"],participle:"wanted"},
-{base:"give",esp:["dar"],past:["gave"],participle:"given"},
-{base:"find",esp:["encontrar"],past:["found"],participle:"found"},
-{base:"tell",esp:["decir","contar"],past:["told"],participle:"told"}
-];
-
-let verbos = [];
 let pendientes = [];
-let actual;
-let intentos = 0;
+let actual = null;
+let ok = 0, fail = 0;
+let verificado = false;
 
-function modoNuevo(){
-    verbos = nuevos;
-    iniciar();
+function shuffle(arr) {
+  let a = [...arr];
+  for (let i = a.length-1; i > 0; i--) {
+    let j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
 }
 
-function modoTodos(){
-    verbos = antiguos.concat(nuevos);
-    iniciar();
+function norm(s) {
+  return s.trim().toLowerCase().replace(/\s*\/\s*/g,' / ').replace(/\s+/g,' ');
 }
 
-function iniciar(){
-    document.getElementById("menu").style.display="none";
-    document.getElementById("juego").style.display="block";
-
-    pendientes = [...verbos];
-    nuevoVerbo();
+function iniciar() {
+  ok = 0; fail = 0;
+  pendientes = shuffle([...verbos]);
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('juego').style.display = 'block';
+  document.getElementById('final').style.display = 'none';
+  actualizarScore();
+  mostrarVerbo();
 }
 
-function nuevoVerbo(){
+function reiniciar() {
+  document.getElementById('final').style.display = 'none';
+  document.getElementById('menu').style.display = 'block';
+}
 
-    if(pendientes.length===0){
-        document.getElementById("verbo").textContent="🎉 Terminaste todos";
-        document.getElementById("resultado").textContent="";
-        document.getElementById("info").textContent="Intentos: "+intentos;
-        return;
+function actualizarScore() {
+  document.getElementById('sc-ok').textContent = ok;
+  document.getElementById('sc-fail').textContent = fail;
+  document.getElementById('sc-left').textContent = pendientes.length;
+  const done = verbos.length - pendientes.length;
+  document.getElementById('pbar').style.width = ((done / verbos.length) * 100) + '%';
+}
+
+function mostrarVerbo() {
+  verificado = false;
+  if (pendientes.length === 0) { mostrarFinal(); return; }
+  actual = pendientes[0];
+  document.getElementById('verbo-display').textContent = actual.inf;
+  document.getElementById('inp-past').value = '';
+  document.getElementById('inp-esp').value = '';
+  document.getElementById('resultado').textContent = '';
+  document.getElementById('resultado').className = 'resultado';
+  document.getElementById('info-card').style.display = 'none';
+  setTimeout(() => document.getElementById('inp-past').focus(), 50);
+}
+
+function verificar() {
+  if (verificado) { mostrarVerbo(); return; }
+  verificado = true;
+
+  const userPast = norm(document.getElementById('inp-past').value);
+  const userEsp  = norm(document.getElementById('inp-esp').value);
+  if (!userPast && !userEsp) { verificado = false; return; }
+
+  const correctPast = actual.ps.split('/').map(s => norm(s));
+  const correctEsp  = actual.esp.map(s => norm(s));
+
+  const pastOk = correctPast.includes(userPast);
+  const espOk  = correctEsp.includes(userEsp);
+  const todoOk = pastOk && espOk;
+
+  const res = document.getElementById('resultado');
+  const card = document.getElementById('info-card');
+  const table = document.getElementById('info-table');
+
+  if (todoOk) {
+    ok++;
+    pendientes.shift();
+    res.textContent = '✅ ¡Correcto!';
+    res.className = 'resultado ok';
+  } else {
+    fail++;
+    pendientes.push(pendientes.shift()); // mover al final para repetir
+    res.className = 'resultado fail';
+    let msg = '❌ ';
+    if (!pastOk) msg += 'Past simple incorrecto. ';
+    if (!espOk)  msg += 'Español incorrecto.';
+    res.textContent = msg;
+  }
+
+  table.innerHTML = `
+    <tr><td>Infinitivo:</td><td>${actual.inf}</td></tr>
+    <tr><td>Past simple:</td><td>${actual.ps}</td></tr>
+    <tr><td>Español:</td><td>${actual.esp[0]}</td></tr>
+  `;
+  card.style.display = 'block';
+
+  document.getElementById('inp-past').disabled = true;
+  document.getElementById('inp-esp').disabled = true;
+
+  actualizarScore();
+
+  // re-enable inputs for next
+  setTimeout(() => {
+    document.getElementById('inp-past').disabled = false;
+    document.getElementById('inp-esp').disabled = false;
+  }, 100);
+}
+
+function mostrarFinal() {
+  document.getElementById('juego').style.display = 'none';
+  document.getElementById('final').style.display = 'block';
+  const total = ok + fail;
+  const pct = total > 0 ? Math.round((ok / total) * 100) : 0;
+  document.getElementById('final-titulo').textContent =
+    pct >= 90 ? '¡Perfecto! ¡Eres un experto!' :
+    pct >= 70 ? '¡Excelente trabajo!' :
+    pct >= 50 ? '¡Buen intento!' : '¡Sigue practicando!';
+  document.getElementById('final-msg').textContent =
+    ok + ' correctas · ' + fail + ' incorrectas (' + pct + '% de acierto)';
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    if (document.getElementById('juego').style.display !== 'none') {
+      verificar();
     }
-
-    let indice=Math.floor(Math.random()*pendientes.length);
-    actual=pendientes[indice];
-
-    document.getElementById("verbo").textContent="Verbo: "+actual.base;
-
-    pasado.value="";
-    participio.value="";
-    espanol.value="";
-    resultado.textContent="";
-}
-
-function verificar(){
-
-    intentos++;
-
-    let pasadoUsuario=pasado.value.toLowerCase().trim();
-    let participioUsuario=participio.value.toLowerCase().trim();
-    let espUsuario=espanol.value.toLowerCase().trim();
-
-    let pasadoCorrecto=actual.past.includes(pasadoUsuario);
-    let participioCorrecto=participioUsuario===actual.participle;
-    let espCorrecto=actual.esp.includes(espUsuario);
-
-    if(pasadoCorrecto && participioCorrecto && espCorrecto){
-
-        resultado.textContent="✅ Correcto";
-
-        pendientes=pendientes.filter(v=>v.base!==actual.base);
-
-        setTimeout(nuevoVerbo,1000);
-
-    }else{
-
-        resultado.textContent=
-        "❌ Incorrecto | Pasado: "+actual.past.join("/")+
-        " | Participio: "+actual.participle+
-        " | Español: "+actual.esp.join("/");
-
-        setTimeout(nuevoVerbo,2500);
-    }
-}
-
+  }
+});
 </script>
-
-</body>
-</html>
