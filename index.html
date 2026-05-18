@@ -1,191 +1,356 @@
-
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body-wrap { font-family: Arial, sans-serif; }
-  .bg { background: linear-gradient(135deg, #4e73df, #1cc88a); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-  .contenedor { background: white; padding: 30px; border-radius: 15px; width: 100%; max-width: 420px; text-align: center; }
-  h2 { margin-bottom: 18px; color: #333; font-size: 20px; }
-  .verbo-display { font-size: 26px; font-weight: bold; color: #4e73df; margin: 12px 0 18px; }
-  .input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; align-items: center; }
-  .input-group input { padding: 9px 12px; width: 220px; border: 1.5px solid #ccc; border-radius: 7px; font-size: 15px; text-align: center; }
-  .input-group input:focus { outline: none; border-color: #4e73df; }
-  .btn { padding: 9px 22px; border: none; border-radius: 7px; background: #36b9cc; color: white; cursor: pointer; font-size: 15px; font-weight: 500; }
-  .btn:hover { background: #2c9faf; }
-  .btn-menu { display: block; width: 220px; margin: 8px auto; padding: 10px; border: none; border-radius: 8px; background: #4e73df; color: white; cursor: pointer; font-size: 15px; font-weight: 500; }
-  .btn-menu:hover { background: #3a5fc0; }
-  .btn-menu.verde { background: #1cc88a; }
-  .btn-menu.verde:hover { background: #17a673; }
-  .resultado { margin-top: 14px; font-weight: bold; font-size: 15px; min-height: 22px; }
-  .resultado.ok { color: #1cc88a; }
-  .resultado.fail { color: #e74a3b; }
-  .info-card { margin-top: 10px; background: #f8f9fc; border-radius: 8px; padding: 10px 14px; text-align: left; font-size: 13px; color: #444; display: none; }
-  .info-card table { width: 100%; border-collapse: collapse; }
-  .info-card td { padding: 3px 6px; }
-  .info-card td:first-child { color: #888; width: 110px; }
-  .info-card td:last-child { font-weight: 600; color: #333; }
-  .score-row { display: flex; gap: 10px; margin-bottom: 18px; justify-content: center; }
-  .score-box { background: #f0f4ff; border-radius: 8px; padding: 8px 14px; text-align: center; min-width: 80px; }
-  .score-box .s-label { font-size: 11px; color: #888; }
-  .score-box .s-val { font-size: 20px; font-weight: bold; color: #4e73df; }
-  .progress { height: 6px; background: #e0e0e0; border-radius: 3px; margin-bottom: 18px; overflow: hidden; }
-  .progress-fill { height: 100%; background: #1cc88a; border-radius: 3px; transition: width 0.4s; }
-  .tag { display: inline-block; background: #e8f4fd; color: #4e73df; font-size: 11px; padding: 2px 10px; border-radius: 12px; margin-bottom: 10px; font-weight: 500; }
-  .final-emoji { font-size: 40px; margin-bottom: 10px; }
+
+  .bg{
+    background: linear-gradient(135deg,#4e73df,#1cc88a);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    font-family:Arial,sans-serif;
+  }
+
+  .contenedor{
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    width:100%;
+    max-width:700px;
+    text-align:center;
+  }
+
+  h2{
+    margin-bottom:18px;
+    color:#333;
+    font-size:22px;
+  }
+
+  .btn{
+    padding:10px 24px;
+    border:none;
+    border-radius:8px;
+    background:#36b9cc;
+    color:white;
+    cursor:pointer;
+    font-size:15px;
+    font-weight:bold;
+    margin-top:15px;
+  }
+
+  .btn:hover{
+    background:#2c9faf;
+  }
+
+  .btn-menu{
+    display:block;
+    width:230px;
+    margin:10px auto;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#1cc88a;
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+  }
+
+  .btn-menu:hover{
+    background:#17a673;
+  }
+
+  .score-row{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+  }
+
+  .score-box{
+    background:#f0f4ff;
+    border-radius:10px;
+    padding:10px 18px;
+    min-width:100px;
+  }
+
+  .s-label{
+    font-size:12px;
+    color:#777;
+  }
+
+  .s-val{
+    font-size:22px;
+    font-weight:bold;
+    color:#4e73df;
+  }
+
+  .progress{
+    height:8px;
+    background:#ddd;
+    border-radius:5px;
+    overflow:hidden;
+    margin-bottom:20px;
+  }
+
+  .progress-fill{
+    height:100%;
+    background:#1cc88a;
+    width:0%;
+    transition:0.4s;
+  }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+  }
+
+  th{
+    background:#4e73df;
+    color:white;
+    padding:12px;
+    font-size:15px;
+  }
+
+  td{
+    border:1px solid #ddd;
+    padding:14px;
+    font-size:20px;
+    font-weight:bold;
+    color:#333;
+  }
+
+  tr:nth-child(even){
+    background:#f8f9fc;
+  }
+
+  .final-emoji{
+    font-size:50px;
+    margin-bottom:10px;
+  }
 </style>
 
 <div class="bg">
+
   <div class="contenedor">
 
     <div id="menu">
-      <h2>🎯 Práctica de Verbos</h2>
-      <p style="color:#888;font-size:13px;margin-bottom:18px;">50 verbos irregulares · Past Simple + Español</p>
-      <button class="btn-menu verde" onclick="iniciar()">▶ Empezar práctica</button>
+      <h2>🎯 Verbos Irregulares</h2>
+
+      <p style="color:#777;margin-bottom:20px">
+        Infinitive · Past Simple · Español
+      </p>
+
+      <button class="btn-menu" onclick="iniciar()">
+        ▶ Empezar
+      </button>
     </div>
 
     <div id="juego" style="display:none">
+
       <div class="score-row">
-        <div class="score-box"><div class="s-label">Correctas</div><div class="s-val" id="sc-ok">0</div></div>
-        <div class="score-box"><div class="s-label">Incorrectas</div><div class="s-val" id="sc-fail" style="color:#e74a3b">0</div></div>
-        <div class="score-box"><div class="s-label">Faltan</div><div class="s-val" id="sc-left" style="color:#f6c23e">50</div></div>
+
+        <div class="score-box">
+          <div class="s-label">Vistos</div>
+          <div class="s-val" id="sc-ok">0</div>
+        </div>
+
+        <div class="score-box">
+          <div class="s-label">Faltan</div>
+          <div class="s-val" id="sc-left">50</div>
+        </div>
+
       </div>
-      <div class="progress"><div class="progress-fill" id="pbar" style="width:0%"></div></div>
-      <div class="tag" id="etapa-tag">Verbo en inglés</div>
-      <div class="verbo-display" id="verbo-display">—</div>
-      <div class="input-group">
-        <input type="text" id="inp-past" placeholder="Past simple..." autocomplete="off" autocorrect="off" spellcheck="false" />
-        <input type="text" id="inp-esp" placeholder="Significado en español..." autocomplete="off" autocorrect="off" spellcheck="false" />
+
+      <div class="progress">
+        <div class="progress-fill" id="pbar"></div>
       </div>
-      <button class="btn" onclick="verificar()">Verificar ✓</button>
-      <div class="resultado" id="resultado"></div>
-      <div class="info-card" id="info-card">
-        <table id="info-table"></table>
-      </div>
+
+      <div id="verbo-display"></div>
+
+      <button class="btn" onclick="siguiente()">
+        Siguiente ➜
+      </button>
+
     </div>
 
     <div id="final" style="display:none">
+
       <div class="final-emoji">🏆</div>
-      <h2 id="final-titulo"></h2>
-      <p style="color:#888;margin:10px 0 20px" id="final-msg"></p>
-      <button class="btn-menu verde" onclick="reiniciar()">Jugar de nuevo</button>
+
+      <h2>¡Terminaste!</h2>
+
+      <p style="color:#777;margin:15px 0">
+        Has repasado los 50 verbos.
+      </p>
+
+      <button class="btn-menu" onclick="reiniciar()">
+        Jugar otra vez
+      </button>
+
     </div>
 
   </div>
+
 </div>
 
 <script>
+
 const verbos = [
-  {inf:"be", ps:"was / were", pp:"been", esp:"ser / estar"},
-  {inf:"become", ps:"became", pp:"become", esp:"convertirse"},
-  {inf:"begin", ps:"began", pp:"begun", esp:"empezar"},
-  {inf:"bring", ps:"brought", pp:"brought", esp:"traer"},
-  {inf:"buy", ps:"bought", pp:"bought", esp:"comprar"},
-  {inf:"choose", ps:"chose", pp:"chosen", esp:"elegir"},
-  {inf:"come", ps:"came", pp:"come", esp:"venir"},
-  {inf:"do", ps:"did", pp:"done", esp:"hacer"},
-  {inf:"drink", ps:"drank", pp:"drunk", esp:"beber"},
-  {inf:"drive", ps:"drove", pp:"driven", esp:"conducir"},
-  {inf:"eat", ps:"ate", pp:"eaten", esp:"comer"},
-  {inf:"fall", ps:"fell", pp:"fallen", esp:"caer"},
-  {inf:"feel", ps:"felt", pp:"felt", esp:"sentir"},
-  {inf:"find", ps:"found", pp:"found", esp:"encontrar"},
-  {inf:"fly", ps:"flew", pp:"flown", esp:"volar"},
-  {inf:"forget", ps:"forgot", pp:"forgotten", esp:"olvidar"},
-  {inf:"get", ps:"got", pp:"gotten", esp:"obtener"},
-  {inf:"give", ps:"gave", pp:"given", esp:"dar"},
-  {inf:"go", ps:"went", pp:"gone", esp:"ir"},
-  {inf:"have", ps:"had", pp:"had", esp:"tener"},
-  {inf:"hear", ps:"heard", pp:"heard", esp:"escuchar"},
-  {inf:"keep", ps:"kept", pp:"kept", esp:"guardar"},
-  {inf:"know", ps:"knew", pp:"known", esp:"conocer"},
-  {inf:"leave", ps:"left", pp:"left", esp:"dejar"},
-  {inf:"lend", ps:"lent", pp:"lent", esp:"prestar"},
-  {inf:"let", ps:"let", pp:"let", esp:"permitir"},
-  {inf:"lose", ps:"lost", pp:"lost", esp:"perder"},
-  {inf:"make", ps:"made", pp:"made", esp:"hacer"},
-  {inf:"meet", ps:"met", pp:"met", esp:"conocer"},
-  {inf:"pay", ps:"paid", pp:"paid", esp:"pagar"},
-  {inf:"put", ps:"put", pp:"put", esp:"poner"},
-  {inf:"read", ps:"read", pp:"read", esp:"leer"},
-  {inf:"run", ps:"ran", pp:"run", esp:"correr"},
-  {inf:"say", ps:"said", pp:"said", esp:"decir"},
-  {inf:"see", ps:"saw", pp:"seen", esp:"ver"},
-  {inf:"sell", ps:"sold", pp:"sold", esp:"vender"},
-  {inf:"send", ps:"sent", pp:"sent", esp:"enviar"},
-  {inf:"sing", ps:"sang", pp:"sung", esp:"cantar"},
-  {inf:"sit", ps:"sat", pp:"sat", esp:"sentarse"},
-  {inf:"sleep", ps:"slept", pp:"slept", esp:"dormir"},
-  {inf:"speak", ps:"spoke", pp:"spoken", esp:"hablar"},
-  {inf:"stand", ps:"stood", pp:"stood", esp:"pararse"},
-  {inf:"swim", ps:"swam", pp:"swum", esp:"nadar"},
-  {inf:"take", ps:"took", pp:"taken", esp:"tomar"},
-  {inf:"teach", ps:"taught", pp:"taught", esp:"enseñar"},
-  {inf:"tell", ps:"told", pp:"told", esp:"contar"},
-  {inf:"think", ps:"thought", pp:"thought", esp:"pensar"},
-  {inf:"understand", ps:"understood", pp:"understood", esp:"entender"},
-  {inf:"wear", ps:"wore", pp:"worn", esp:"usar"},
-  {inf:"write", ps:"wrote", pp:"written", esp:"escribir"},
+  {inf:"be", ps:"was / were", esp:"ser / estar"},
+  {inf:"become", ps:"became", esp:"convertirse"},
+  {inf:"begin", ps:"began", esp:"empezar"},
+  {inf:"bring", ps:"brought", esp:"traer"},
+  {inf:"buy", ps:"bought", esp:"comprar"},
+  {inf:"choose", ps:"chose", esp:"elegir"},
+  {inf:"come", ps:"came", esp:"venir"},
+  {inf:"do", ps:"did", esp:"hacer"},
+  {inf:"drink", ps:"drank", esp:"beber"},
+  {inf:"drive", ps:"drove", esp:"conducir"},
+  {inf:"eat", ps:"ate", esp:"comer"},
+  {inf:"fall", ps:"fell", esp:"caer"},
+  {inf:"feel", ps:"felt", esp:"sentir"},
+  {inf:"find", ps:"found", esp:"encontrar"},
+  {inf:"fly", ps:"flew", esp:"volar"},
+  {inf:"forget", ps:"forgot", esp:"olvidar"},
+  {inf:"get", ps:"got", esp:"obtener"},
+  {inf:"give", ps:"gave", esp:"dar"},
+  {inf:"go", ps:"went", esp:"ir"},
+  {inf:"have", ps:"had", esp:"tener"},
+  {inf:"hear", ps:"heard", esp:"escuchar"},
+  {inf:"keep", ps:"kept", esp:"guardar"},
+  {inf:"know", ps:"knew", esp:"conocer"},
+  {inf:"leave", ps:"left", esp:"dejar"},
+  {inf:"lend", ps:"lent", esp:"prestar"},
+  {inf:"let", ps:"let", esp:"permitir"},
+  {inf:"lose", ps:"lost", esp:"perder"},
+  {inf:"make", ps:"made", esp:"hacer"},
+  {inf:"meet", ps:"met", esp:"conocer"},
+  {inf:"pay", ps:"paid", esp:"pagar"},
+  {inf:"put", ps:"put", esp:"poner"},
+  {inf:"read", ps:"read", esp:"leer"},
+  {inf:"run", ps:"ran", esp:"correr"},
+  {inf:"say", ps:"said", esp:"decir"},
+  {inf:"see", ps:"saw", esp:"ver"},
+  {inf:"sell", ps:"sold", esp:"vender"},
+  {inf:"send", ps:"sent", esp:"enviar"},
+  {inf:"sing", ps:"sang", esp:"cantar"},
+  {inf:"sit", ps:"sat", esp:"sentarse"},
+  {inf:"sleep", ps:"slept", esp:"dormir"},
+  {inf:"speak", ps:"spoke", esp:"hablar"},
+  {inf:"stand", ps:"stood", esp:"pararse"},
+  {inf:"swim", ps:"swam", esp:"nadar"},
+  {inf:"take", ps:"took", esp:"tomar"},
+  {inf:"teach", ps:"taught", esp:"enseñar"},
+  {inf:"tell", ps:"told", esp:"contar"},
+  {inf:"think", ps:"thought", esp:"pensar"},
+  {inf:"understand", ps:"understood", esp:"entender"},
+  {inf:"wear", ps:"wore", esp:"usar"},
+  {inf:"write", ps:"wrote", esp:"escribir"}
 ];
 
 let pendientes = [];
+let vistos = 0;
 let actual = null;
-let ok = 0, fail = 0;
-let verificado = false;
 
-function shuffle(arr) {
+function shuffle(arr){
+
   let a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
+
+  for(let i = a.length - 1; i > 0; i--){
+
     let j = Math.floor(Math.random() * (i + 1));
+
     [a[i], a[j]] = [a[j], a[i]];
   }
+
   return a;
 }
 
-function norm(s) {
-  return s.trim().toLowerCase();
-}
+function iniciar(){
 
-function iniciar() {
-  ok = 0;
-  fail = 0;
   pendientes = shuffle([...verbos]);
 
-  document.getElementById('menu').style.display = 'none';
-  document.getElementById('juego').style.display = 'block';
-  document.getElementById('final').style.display = 'none';
+  vistos = 0;
+
+  document.getElementById("menu").style.display = "none";
+
+  document.getElementById("juego").style.display = "block";
+
+  document.getElementById("final").style.display = "none";
 
   actualizarScore();
+
   mostrarVerbo();
 }
 
-function mostrarVerbo() {
+function mostrarVerbo(){
 
-  if (pendientes.length === 0) {
+  if(pendientes.length === 0){
+
     mostrarFinal();
+
     return;
   }
 
-  verificado = false;
-
   actual = pendientes[0];
 
-  document.getElementById('verbo-display').innerHTML = `
-    <table style="width:100%;margin-top:10px">
-      <tr style="font-size:14px;color:#888">
+  document.getElementById("verbo-display").innerHTML = `
+  
+    <table>
+
+      <tr>
         <th>Infinitive</th>
         <th>Past Simple</th>
         <th>Español</th>
       </tr>
-      <tr style="font-size:22px;color:#4e73df">
+
+      <tr>
         <td>${actual.inf}</td>
         <td>${actual.ps}</td>
         <td>${actual.esp}</td>
       </tr>
+
     </table>
   `;
-
-  document.getElementById('inp-past').style.display = 'none';
-  document.getElementById('inp-esp').style.display = 'none';
-
-  document.getElementById('resultado').textContent = '';
-  document.getElementById('info-card').style.display = 'none';
 }
+
+function siguiente(){
+
+  pendientes.shift();
+
+  vistos++;
+
+  actualizarScore();
+
+  mostrarVerbo();
+}
+
+function actualizarScore(){
+
+  document.getElementById("sc-ok").textContent = vistos;
+
+  document.getElementById("sc-left").textContent =
+    pendientes.length;
+
+  document.getElementById("pbar").style.width =
+    ((vistos / verbos.length) * 100) + "%";
+}
+
+function mostrarFinal(){
+
+  document.getElementById("juego").style.display = "none";
+
+  document.getElementById("final").style.display = "block";
+}
+
+function reiniciar(){
+
+  document.getElementById("final").style.display = "none";
+
+  document.getElementById("menu").style.display = "block";
+}
+
+</script>
